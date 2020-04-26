@@ -1,0 +1,1 @@
+adb shell pm clear com.timepassapps.expenselog

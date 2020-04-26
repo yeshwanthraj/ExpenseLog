@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ExpenseLog</string>
+    <string name="start_scan">Start scan</string>
+    <string name="sms_permission_request">Expense tracker needs access to your SMS to help you track your expenses.</string>
+    <string name="sms_permission_grant">Grant permission</string>
+    <string name="sms_permission">Sms Permission</string>
+</resources>
