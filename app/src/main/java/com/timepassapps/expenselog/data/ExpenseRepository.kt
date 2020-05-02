@@ -1,12 +1,14 @@
-package com.timepassapps.expenselog.database
+package com.timepassapps.expenselog.data
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.timepassapps.expenselog.models.Expense
+import com.timepassapps.expenselog.data.database.ExpenseDao
+import com.timepassapps.expenselog.data.database.ExpenseDatabase
+import com.timepassapps.expenselog.data.database.Expense
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class SmsRepository(context : Context) : CoroutineScope {
+class ExpenseRepository(context : Context) : CoroutineScope {
 
     private val job = Job()
     override val coroutineContext: CoroutineContext get() = job + Dispatchers.Default

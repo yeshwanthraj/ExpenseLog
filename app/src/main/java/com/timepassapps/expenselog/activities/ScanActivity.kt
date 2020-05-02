@@ -6,28 +6,30 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
 import com.timepassapps.expenselog.R
 import com.timepassapps.expenselog.utils.*
-import com.timepassapps.expenselog.viewmodels.SmsViewModel
+import com.timepassapps.expenselog.viewmodels.ScanViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModelProvider
+import com.timepassapps.expenselog.data.SharedPrefs
 
 
-class MainActivity : AppCompatActivity(), CoroutineScope {
+class ScanActivity : AppCompatActivity(), CoroutineScope {
 
     private val TAG = javaClass.simpleName
 
     val job = Job()
     override val coroutineContext: CoroutineContext get() = job + Dispatchers.Main
     private val SMS_PERMISSION_REQUEST = 100
-    private lateinit var viewModel : SmsViewModel
+    private lateinit var viewModel : ScanViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel = ViewModelProvider(this).get(SmsViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ScanViewModel::class.java)
         if(!hasPermission()) {
             if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
                 smsPermissionWarning.show()
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun generateExpenseDb() {
-        val expenseJob = launch {
+        launch {
             val expenseList = viewModel.generateExpenses()
             expenseList?.let {
                 viewModel.insertExpenses(expenseList)

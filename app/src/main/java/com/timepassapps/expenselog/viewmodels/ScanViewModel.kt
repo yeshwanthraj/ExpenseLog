@@ -1,13 +1,13 @@
 package com.timepassapps.expenselog.viewmodels
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.timepassapps.expenselog.models.Expense
-import com.timepassapps.expenselog.database.SmsRepository
+import androidx.lifecycle.ViewModel
+import com.timepassapps.expenselog.data.database.Expense
+import com.timepassapps.expenselog.data.ExpenseRepository
 import com.timepassapps.expenselog.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class SmsViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
+class ScanViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
 
     private val TAG = "SmsViewModel"
 
@@ -24,25 +24,25 @@ class SmsViewModel(application: Application) : AndroidViewModel(application), Co
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    private val smsRepository = SmsRepository(application)
+    private val expenseRepository = ExpenseRepository(application)
 
     private lateinit var expenseList : LiveData<MutableList<Expense>>
 
 
     suspend fun getExpenseList() : LiveData<MutableList<Expense>> {
         if(!::expenseList.isInitialized) {
-            expenseList = smsRepository.getExpenseList()
+            expenseList = expenseRepository.getExpenseList()
         }
 
         return expenseList
     }
 
     suspend fun insertExpense(expense: Expense) {
-        smsRepository.insertExpense(expense)
+        expenseRepository.insertExpense(expense)
     }
 
     suspend fun insertExpenses(expenses : List<Expense>) {
-        smsRepository.insertExpenses(expenses)
+        expenseRepository.insertExpenses(expenses)
     }
 
     suspend fun generateExpenses() = withContext(Dispatchers.IO) {

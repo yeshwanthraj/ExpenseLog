@@ -1,11 +1,14 @@
-package com.timepassapps.expenselog.utils
+package com.timepassapps.expenselog.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
+import com.timepassapps.expenselog.utils.AppConstants
+import com.timepassapps.expenselog.utils.SingletonHolder
 
 class SharedPrefs private constructor(context: Context) {
 
-    private val sharedPrefs = context.getSharedPreferences(AppConstants.APP_PREFS,Context.MODE_PRIVATE)
+    private val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val sharedPrefsEditor : SharedPreferences.Editor
 

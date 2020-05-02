@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
-import com.timepassapps.expenselog.database.ExpenseDatabase
-import com.timepassapps.expenselog.models.Expense
+import com.timepassapps.expenselog.data.database.ExpenseDatabase
+import com.timepassapps.expenselog.data.database.Expense
 import com.timepassapps.expenselog.utils.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

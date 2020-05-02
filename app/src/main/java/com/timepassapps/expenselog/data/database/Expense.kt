@@ -1,4 +1,4 @@
-package com.timepassapps.expenselog.models
+package com.timepassapps.expenselog.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -21,4 +21,8 @@ class Expense {
     var balance: BigDecimal = BigDecimal(-1)
 
     var message: String = ""
+
+    override fun toString(): String {
+        return super.toString()
+    }
 }
