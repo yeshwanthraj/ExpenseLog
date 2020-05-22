@@ -26,11 +26,11 @@ class ScanViewModel(application: Application) : AndroidViewModel(application), C
 
     private val expenseRepository = ExpenseRepository(application)
 
-    private lateinit var expenseList : LiveData<MutableList<Expense>>
+    private lateinit var expenseList: LiveData<MutableList<Expense>>
 
 
-    suspend fun getExpenseList() : LiveData<MutableList<Expense>> {
-        if(!::expenseList.isInitialized) {
+    suspend fun getExpenseList(): LiveData<MutableList<Expense>> {
+        if (!::expenseList.isInitialized) {
             expenseList = expenseRepository.getExpenseList()
         }
 
@@ -41,14 +41,13 @@ class ScanViewModel(application: Application) : AndroidViewModel(application), C
         expenseRepository.insertExpense(expense)
     }
 
-    suspend fun insertExpenses(expenses : List<Expense>) {
+    suspend fun insertExpenses(expenses: List<Expense>) {
         expenseRepository.insertExpenses(expenses)
     }
 
-    suspend fun generateExpenses() = withContext(Dispatchers.IO) {
+    suspend fun generateExpenses(): List<Expense>? = withContext(Dispatchers.IO) {
         val cursor = getApplication<Application>().contentResolver.query(Uri.parse(SmsConstants.SMS_CONTENT_URI), null, null, null, null)
-        return@withContext cursor?.let {
-            val list = ArrayList<Expense>()
+        cursor?.let {
             if (cursor.moveToFirst()) { // must check the result to prevent exception
                 val columnNames = ArrayList(listOf(*cursor.columnNames))
                 columnNames.sort()
@@ -64,27 +63,34 @@ class ScanViewModel(application: Application) : AndroidViewModel(application), C
                 if (columnNames.contains(SmsConstants.TIME_COLUMN)) {
                     timeColumnIndex = cursor.getColumnIndex(SmsConstants.TIME_COLUMN)
                 }
+                val list = ArrayList<Expense>()
                 do {
-                    if (senderColumnIndex != -1 && isBankSms(cursor.getString(senderColumnIndex))) {
-                        if (bodyColumnIndex != -1) {
+                    if (senderColumnIndex != -1 && bodyColumnIndex != -1) {
+                        val messageBody = cursor.getString(bodyColumnIndex)
+                        val sender = cursor.getString(senderColumnIndex)
+                        if (isBankSms(sender) && isDebit(messageBody)) {
                             val expense = Expense()
-                            expense.bank = getBankName(cursor.getString(senderColumnIndex))
-                            val smsMessage = cursor.getString(bodyColumnIndex)
-                            expense.message = smsMessage
-                            expense.amount = getExpenseAmount(smsMessage)
+                            expense.bank = getBankName(sender)
+                            expense.message = messageBody
+                            expense.amount = getExpenseAmount(messageBody)
                             expense.time = cursor.getLong(timeColumnIndex)
                             if (hasBalance(cursor.getString(bodyColumnIndex))) {
-                                expense.balance = getBalance(smsMessage)
+                                expense.balance = getBalance(messageBody)
                             }
+
                             list.add(expense)
+                            Log.d(TAG, "Expense for sms ${expense.message} is ${expense.amount}")
                         }
+                    } else {
+                        return@withContext null
                     }
                 } while (cursor.moveToNext())
                 cursor.close()
                 Log.d(TAG, "generateExpenseList: expense list size is " + list.size)
+                return@withContext list
             }
-            list
+            return@withContext null
         }
+        return@withContext null
     }
-
 }

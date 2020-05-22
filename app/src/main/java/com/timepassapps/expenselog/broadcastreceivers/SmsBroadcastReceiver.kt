@@ -19,7 +19,7 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
         val smsMessage = Telephony.Sms.Intents.getMessagesFromIntent(intent)[0]
         val sender = smsMessage.originatingAddress
         val message = smsMessage.messageBody
-        if(isBankSms(sender) && isExpense(message)) {
+        if(isBankSms(sender) && isDebit(message)) {
             val expense = Expense()
             expense.message = message
             expense.bank = getBankName(sender)

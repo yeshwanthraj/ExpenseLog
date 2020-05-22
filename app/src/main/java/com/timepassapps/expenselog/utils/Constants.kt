@@ -14,7 +14,7 @@ object SmsConstants {
 }
 
 object BankConstants {
-    val BANK_NAMES: Map<String, String> = object : HashMap<String, String>() {
+   val BANK_NAMES: Map<String, String> = object : HashMap<String, String>() {
         init {
             put("HDFCB", "HDFC Bank")
             put("ICICIB", "ICICI Bank")
@@ -25,7 +25,8 @@ object BankConstants {
         }
     }
     const val OTP = "OTP"
-    var EXPENSE_KEYWORDS = arrayOf("withdraw", "debit", "sent", "transfer")
-    var AMOUNT_REGEX = "(([Rr][Ss])|(INR))(\\s|\\.)((\\d{1,2},)*\\d{1,3}.\\d{2})"
-    var CARD_NUMBER_REGEX = "(XX|xx)\\d{4}"
+    val DEBIT_KEYWORDS = arrayOf("withdraw", "debit", "sent", "transfer")
+    val CREDIT_KEYWORDS = arrayOf("credit")
+    val AMOUNT_REGEX = "(([Rr][Ss])|(INR))(\\s|\\.)((\\d{1,2},)*\\d{1,3}.\\d{2})"
+    val CARD_NUMBER_REGEX = "(XX|xx)\\d{4}"
 }

@@ -1,8 +1,6 @@
 package com.timepassapps.expenselog.utils
 
-import android.util.Log
 import androidx.annotation.Nullable
-import com.timepassapps.expenselog.utils.BankConstants
 import java.math.BigDecimal
 import java.util.regex.Pattern
 
@@ -16,27 +14,43 @@ fun isBankSms(sender: String): Boolean {
     return false
 }
 
-@Nullable
-fun getBankName(sender: String): String? {
+fun getBankName(sender: String): String {
     for (bank in BankConstants.BANK_NAMES.keys) {
         if (sender.contains(bank)) {
-            return BankConstants.BANK_NAMES[bank]
+            return BankConstants.BANK_NAMES[bank].toString()
         }
     }
-    return null
+    return ""
 }
 
-fun isExpense(message: String): Boolean  =
+fun isDebit(message: String): Boolean  =
     if (message.contains(BankConstants.OTP)) {
         false
     } else {
-        containsExpenseKeywords(message)
+        containsDebitKeywords(message) && hasExpense(message)
     }
 
-private fun containsExpenseKeywords(message: String): Boolean {
-    var msg = message.toLowerCase()
-    for (i in BankConstants.EXPENSE_KEYWORDS.indices) {
-        if (msg.contains(BankConstants.EXPENSE_KEYWORDS[i])) {
+fun isCredit(message: String) : Boolean =
+        if(message.contains(BankConstants.OTP)) {
+            false
+        } else {
+            containsCreditKeywords(message)
+        }
+
+private fun containsDebitKeywords(message: String): Boolean {
+    val msg = message.toLowerCase()
+    for (keyword in BankConstants.DEBIT_KEYWORDS) {
+        if (msg.contains(keyword)) {
+            return true
+        }
+    }
+    return false
+}
+
+private fun containsCreditKeywords(message: String) : Boolean {
+    val msg = message.toLowerCase()
+    for(keyword in BankConstants.CREDIT_KEYWORDS) {
+        if(msg.contains(keyword)) {
             return true
         }
     }
@@ -61,7 +75,7 @@ fun getBalance(message: String): BigDecimal =
     }
 
 fun getExpenseAmount(message: String): BigDecimal =
-    if (isExpense(message)) {
+    if (isDebit(message)) {
         val pattern = Pattern.compile(BankConstants.AMOUNT_REGEX)
         val matcher = pattern.matcher(message)
         if (matcher.find() && matcher.groupCount() >= 5) {
@@ -72,6 +86,12 @@ fun getExpenseAmount(message: String): BigDecimal =
     } else {
         BigDecimal(-1)
     }
+
+fun hasExpense(message : String) : Boolean {
+    val p = Pattern.compile(BankConstants.AMOUNT_REGEX)
+    val m = p.matcher(message)
+    return m.find()
+}
 
 fun hasBalance(message: String): Boolean {
     val p = Pattern.compile(BankConstants.AMOUNT_REGEX)
