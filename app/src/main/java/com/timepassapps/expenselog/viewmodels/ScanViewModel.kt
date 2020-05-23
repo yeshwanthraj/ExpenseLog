@@ -77,7 +77,6 @@ class ScanViewModel(application: Application) : AndroidViewModel(application), C
                             if (hasBalance(cursor.getString(bodyColumnIndex))) {
                                 expense.balance = getBalance(messageBody)
                             }
-
                             list.add(expense)
                             Log.d(TAG, "Expense for sms ${expense.message} is ${expense.amount}")
                         }

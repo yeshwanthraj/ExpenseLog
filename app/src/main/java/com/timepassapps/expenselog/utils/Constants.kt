@@ -24,9 +24,14 @@ object BankConstants {
             put("SBI", "SBI Bank")
         }
     }
+}
+
+object KeywordConstants {
     const val OTP = "OTP"
     val DEBIT_KEYWORDS = arrayOf("withdraw", "debit", "sent", "transfer")
     val CREDIT_KEYWORDS = arrayOf("credit")
-    val AMOUNT_REGEX = "(([Rr][Ss])|(INR))(\\s|\\.)((\\d{1,2},)*\\d{1,3}.\\d{2})"
-    val CARD_NUMBER_REGEX = "(XX|xx)\\d{4}"
+    const val AMOUNT_REGEX = "(([Rr][Ss])|(INR))(\\s*)((\\d{1,2},)*\\d{1,3}.\\d{2})"
+    const val CARD_NUMBER_REGEX = "(XX|xx)\\d{4}"
+    const val UPI = "UPI"
+    const val REQUEST = "request"
 }

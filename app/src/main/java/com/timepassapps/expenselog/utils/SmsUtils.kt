@@ -23,15 +23,15 @@ fun getBankName(sender: String): String {
     return ""
 }
 
-fun isDebit(message: String): Boolean  =
-    if (message.contains(BankConstants.OTP)) {
-        false
-    } else {
-        containsDebitKeywords(message) && hasExpense(message)
-    }
+fun isDebit(message: String): Boolean  {
+        if(message.contains(KeywordConstants.OTP)) return false
+        if(message.contains(KeywordConstants.REQUEST)) return false
+        if(containsDebitKeywords(message) && hasExpense(message)) return true
+    return false
+}
 
 fun isCredit(message: String) : Boolean =
-        if(message.contains(BankConstants.OTP)) {
+        if(message.contains(KeywordConstants.OTP)) {
             false
         } else {
             containsCreditKeywords(message)
@@ -39,7 +39,7 @@ fun isCredit(message: String) : Boolean =
 
 private fun containsDebitKeywords(message: String): Boolean {
     val msg = message.toLowerCase()
-    for (keyword in BankConstants.DEBIT_KEYWORDS) {
+    for (keyword in KeywordConstants.DEBIT_KEYWORDS) {
         if (msg.contains(keyword)) {
             return true
         }
@@ -49,7 +49,7 @@ private fun containsDebitKeywords(message: String): Boolean {
 
 private fun containsCreditKeywords(message: String) : Boolean {
     val msg = message.toLowerCase()
-    for(keyword in BankConstants.CREDIT_KEYWORDS) {
+    for(keyword in KeywordConstants.CREDIT_KEYWORDS) {
         if(msg.contains(keyword)) {
             return true
         }
@@ -59,7 +59,7 @@ private fun containsCreditKeywords(message: String) : Boolean {
 
 fun getBalance(message: String): BigDecimal =
     if (hasBalance(message)) {
-        val pattern = Pattern.compile(BankConstants.AMOUNT_REGEX)
+        val pattern = Pattern.compile(KeywordConstants.AMOUNT_REGEX)
         val matcher = pattern.matcher(message)
         // Find the first match and ignore its results
         matcher.find()
@@ -76,7 +76,7 @@ fun getBalance(message: String): BigDecimal =
 
 fun getExpenseAmount(message: String): BigDecimal =
     if (isDebit(message)) {
-        val pattern = Pattern.compile(BankConstants.AMOUNT_REGEX)
+        val pattern = Pattern.compile(KeywordConstants.AMOUNT_REGEX)
         val matcher = pattern.matcher(message)
         if (matcher.find() && matcher.groupCount() >= 5) {
             BigDecimal(matcher.group(5).replace(",",""))
@@ -88,13 +88,16 @@ fun getExpenseAmount(message: String): BigDecimal =
     }
 
 fun hasExpense(message : String) : Boolean {
-    val p = Pattern.compile(BankConstants.AMOUNT_REGEX)
+    val p = Pattern.compile(KeywordConstants.AMOUNT_REGEX)
     val m = p.matcher(message)
     return m.find()
 }
 
+fun isUpiExpense(message: String): Boolean  =
+    message.contains(KeywordConstants.UPI,ignoreCase = false)
+
 fun hasBalance(message: String): Boolean {
-    val p = Pattern.compile(BankConstants.AMOUNT_REGEX)
+    val p = Pattern.compile(KeywordConstants.AMOUNT_REGEX)
     val m = p.matcher(message)
     var count = 0
     while (m.find()) {
@@ -105,7 +108,7 @@ fun hasBalance(message: String): Boolean {
 
 @Nullable
 fun getCardNumber(message: String): String? {
-    val pattern = Pattern.compile(BankConstants.CARD_NUMBER_REGEX)
+    val pattern = Pattern.compile(KeywordConstants.CARD_NUMBER_REGEX)
     val matcher = pattern.matcher(message)
     return if (matcher.find()) {
         matcher.group()
