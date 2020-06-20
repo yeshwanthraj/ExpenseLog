@@ -20,7 +20,7 @@ class ScanViewModel(application: Application,private val expenseRepository: Expe
 	override val coroutineContext: CoroutineContext
 		get() = job + Dispatchers.Main
 
-	lateinit var isExpenseDbGenerated : MutableLiveData<Boolean>
+	val isExpenseDbGenerated = MutableLiveData<Boolean>()
 
 	fun generateExpenseDb() {
 		launch {

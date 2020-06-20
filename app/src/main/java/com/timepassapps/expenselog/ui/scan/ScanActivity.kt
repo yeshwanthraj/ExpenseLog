@@ -12,6 +12,7 @@ import com.timepassapps.expenselog.R
 import com.timepassapps.expenselog.utils.*
 import kotlinx.android.synthetic.main.activity_scan.*
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.timepassapps.expenselog.data.SharedPrefs
 import com.timepassapps.expenselog.ui.list.ExpenseListActivity
 
@@ -26,7 +27,7 @@ class ScanActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_scan)
-		viewModel = ViewModelProvider(this).get(ScanViewModel::class.java)
+		viewModel = ViewModelProvider(this,ScanViewModelFactory(application)).get(ScanViewModel::class.java)
 		if(!hasPermission()) {
 			if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
 				smsPermissionWarning.show()
