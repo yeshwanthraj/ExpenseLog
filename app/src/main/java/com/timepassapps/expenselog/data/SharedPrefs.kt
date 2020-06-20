@@ -3,7 +3,6 @@ package com.timepassapps.expenselog.data
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.timepassapps.expenselog.utils.AppConstants
 import com.timepassapps.expenselog.utils.SingletonHolder
 
 class SharedPrefs private constructor(context: Context) {
